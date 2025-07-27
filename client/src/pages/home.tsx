@@ -22,8 +22,8 @@ export default function Home() {
   const [outputImage, setOutputImage] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [settings, setSettings] = useState<GenerationSettings>({
-    model: "stable-diffusion-xl",
-    sampler: "dpm-2m-karras",
+    model: "stable-diffusion-xl-base-1.0",
+    sampler: "Euler",
     cfgScale: 7.5,
     steps: 20,
     denoiseStrength: 0.75,
@@ -80,78 +80,95 @@ export default function Home() {
       <div className="max-w-6xl mx-auto px-6 py-8">
         {/* Header */}
         <header className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-[#111827] mb-3">AI Image Forge</h1>
-          <p className="text-lg text-[#6B7280] font-medium">
-            Jednoduchý nástroj pro převod obrázků pomocí AI
+          <h1 className="text-3xl font-bold text-[#111827] mb-3">AI Image Generator</h1>
+          <p className="text-sm text-[#6B7280] font-medium">
+            Img2Img • Powered by Stable Diffusion
           </p>
         </header>
 
-        {/* Image Workspace */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Input Image Box */}
-          <Card className="p-6 h-[480px] flex flex-col bg-white border border-[#E5E7EB] rounded-2xl shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-[#111827]">Vstupní obrázek</h3>
-            </div>
-            <ImageUpload onImageUpload={handleImageUpload} />
-          </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Column */}
+          <div className="space-y-6">
+            {/* Input Image Box */}
+            <Card className="p-6 bg-white border border-[#E5E7EB] rounded-2xl shadow-sm">
+              <div className="flex items-center mb-4">
+                <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center mr-3">
+                  <span className="text-white text-sm">📤</span>
+                </div>
+                <h3 className="text-lg font-semibold text-[#111827]">Vstupní obrázek</h3>
+              </div>
+              <div className="h-[300px]">
+                <ImageUpload onImageUpload={handleImageUpload} />
+              </div>
+              <p className="text-sm text-[#6B7280] mt-3">
+                Podporované formáty: PNG, JPG, JPEG, WebP
+              </p>
+            </Card>
 
-          {/* Output Image Box */}
-          <Card className="p-6 h-[480px] flex flex-col bg-white border border-[#E5E7EB] rounded-2xl shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-[#111827]">Vygenerovaný obrázek</h3>
-            </div>
-            
-            <div 
-              className="flex-1 border border-[#E5E7EB] rounded-xl flex items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
-              onClick={() => outputImage && setIsFullscreen(true)}
-              data-testid="output-container"
+            {/* Generate Button */}
+            <Button
+              onClick={handleGenerate}
+              disabled={!inputImage || generateMutation.isPending}
+              className="w-full bg-[#6C63FF] hover:bg-[#5B54E6] text-white text-lg font-semibold py-4 h-[56px] rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-[#6C63FF]/25 disabled:opacity-50 disabled:cursor-not-allowed"
+              data-testid="button-generate"
             >
-              {generateMutation.isPending ? (
-                <div className="text-center" data-testid="loading-state">
-                  <div className="w-16 h-16 bg-[#6C63FF]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-                    <Wand2 className="h-8 w-8 text-[#6C63FF] animate-spin" />
-                  </div>
-                  <p className="text-[#111827] font-medium mb-2">Generování...</p>
-                  <div className="w-32 h-2 bg-gray-200 rounded-full mx-auto">
-                    <div className="h-2 bg-[#6C63FF] rounded-full animate-pulse w-[45%]"></div>
-                  </div>
-                </div>
-              ) : outputImage ? (
-                <div className="w-full h-full rounded-xl overflow-hidden" data-testid="output-result">
-                  <img 
-                    src={outputImage} 
-                    alt="Vygenerovaný obrázek" 
-                    className="w-full h-full object-cover hover:scale-105 transition-transform"
-                  />
-                </div>
-              ) : (
-                <div className="text-center" data-testid="output-placeholder">
-                  <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Wand2 className="h-8 w-8 text-gray-400" />
-                  </div>
-                  <p className="text-[#6B7280]">Výsledek se zobrazí zde</p>
-                </div>
-              )}
-            </div>
-          </Card>
-        </div>
+              <Wand2 className="mr-3 h-5 w-5" />
+              {generateMutation.isPending ? "Generování..." : "Generovat obrázek"}
+            </Button>
 
-        {/* Generate Button */}
-        <div className="text-center mb-12">
-          <Button
-            onClick={handleGenerate}
-            disabled={!inputImage || generateMutation.isPending}
-            className="bg-[#6C63FF] hover:bg-[#5B54E6] text-white text-xl font-semibold px-16 py-4 h-[60px] rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#6C63FF]/25 disabled:opacity-50 disabled:cursor-not-allowed"
-            data-testid="button-generate"
-          >
-            <Wand2 className="mr-3 h-6 w-6" />
-            {generateMutation.isPending ? "Generování..." : "Generovat"}
-          </Button>
-        </div>
+            {/* Settings Panel */}
+            <SettingsPanel settings={settings} onSettingsChange={setSettings} />
+          </div>
 
-        {/* Settings Panel */}
-        <SettingsPanel settings={settings} onSettingsChange={setSettings} />
+          {/* Right Column - Output */}
+          <div>
+            <Card className="p-6 bg-white border border-[#E5E7EB] rounded-2xl shadow-sm h-[600px] flex flex-col">
+              <div className="flex items-center mb-4">
+                <div className="w-6 h-6 bg-green-500 rounded flex items-center justify-center mr-3">
+                  <span className="text-white text-sm">✓</span>
+                </div>
+                <h3 className="text-lg font-semibold text-[#111827]">Vygenerovaný obrázek</h3>
+              </div>
+              
+              <div 
+                className="flex-1 border-2 border-dashed border-[#E5E7EB] rounded-xl flex items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                onClick={() => outputImage && setIsFullscreen(true)}
+                data-testid="output-container"
+              >
+                {generateMutation.isPending ? (
+                  <div className="text-center" data-testid="loading-state">
+                    <div className="w-16 h-16 bg-[#6C63FF]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                      <Wand2 className="h-8 w-8 text-[#6C63FF] animate-spin" />
+                    </div>
+                    <p className="text-[#111827] font-medium mb-2">Generování...</p>
+                    <div className="w-32 h-2 bg-gray-200 rounded-full mx-auto">
+                      <div className="h-2 bg-[#6C63FF] rounded-full animate-pulse w-[45%]"></div>
+                    </div>
+                  </div>
+                ) : outputImage ? (
+                  <div className="w-full h-full rounded-xl overflow-hidden" data-testid="output-result">
+                    <img 
+                      src={outputImage} 
+                      alt="Vygenerovaný obrázek" 
+                      className="w-full h-full object-cover hover:scale-105 transition-transform"
+                    />
+                  </div>
+                ) : (
+                  <div className="text-center" data-testid="output-placeholder">
+                    <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Wand2 className="h-8 w-8 text-gray-400" />
+                    </div>
+                    <p className="text-[#111827] font-medium mb-2">Zatím žádný obrázek</p>
+                    <p className="text-sm text-[#6B7280]">
+                      Nahrajte vstupní obrázek a klikněte na "Generovat<br />
+                      obrázek" pro vytvoření nového obrázku
+                    </p>
+                  </div>
+                )}
+              </div>
+            </Card>
+          </div>
+        </div>
 
         {/* Fullscreen Modal */}
         <FullscreenModal

@@ -45,7 +45,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: null, // For now, no user authentication
       });
 
-      // Simulate AI processing time
+      // Simulate AI processing time and return result directly
       setTimeout(async () => {
         try {
           // In real implementation, this would call the AI service
@@ -62,13 +62,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
             status: 'failed',
           });
         }
-      }, 3000);
+      }, 2000);
 
-      res.json({
-        generationId: generation.id,
-        status: 'processing',
-        message: 'Generation started',
-      });
+      // Return the result directly after processing simulation
+      setTimeout(() => {
+        res.json({
+          outputUrl: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+          status: 'completed',
+          message: 'Generation completed successfully',
+        });
+      }, 2500);
     } catch (error) {
       console.error('Generation error:', error);
       if (error instanceof z.ZodError) {
