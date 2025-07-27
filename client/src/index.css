@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(213, 31%, 97%);
+  --foreground: hsl(213, 31%, 9%);
+  --muted: hsl(213, 31%, 95%);
+  --muted-foreground: hsl(213, 11%, 46%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(213, 31%, 9%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(213, 31%, 9%);
+  --border: hsl(213, 13%, 89%);
+  --input: hsl(213, 13%, 89%);
+  --primary: hsl(245, 100%, 69%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(213, 31%, 95%);
+  --secondary-foreground: hsl(213, 31%, 9%);
+  --accent: hsl(213, 31%, 95%);
+  --accent-foreground: hsl(213, 31%, 9%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(245, 100%, 69%);
+  --radius: 0.75rem;
+  
+  /* Custom app colors */
+  --app-bg: hsl(213, 31%, 97%);
+  --text-primary: hsl(213, 31%, 9%);
+  --text-secondary: hsl(213, 11%, 46%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(245, 100%, 69%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-inter antialiased;
+    background-color: #F8F9FB;
+    color: #111827;
+  }
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom slider styles */
+.slider-thumb::-webkit-slider-thumb {
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #6C63FF;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(108, 99, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.slider-thumb::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(108, 99, 255, 0.4);
+}
+
+.slider-thumb::-webkit-slider-track {
+  height: 8px;
+  border-radius: 4px;
+  background: #E5E7EB;
+}
+
+.slider-thumb::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #6C63FF;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(108, 99, 255, 0.3);
+}
+
+.slider-thumb::-moz-range-track {
+  height: 8px;
+  border-radius: 4px;
+  background: #E5E7EB;
+}
