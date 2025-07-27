@@ -5,9 +5,14 @@ import { Wand2 } from "lucide-react";
 import ImageUpload from "@/components/image-upload";
 import SettingsPanel from "@/components/settings-panel";
 import FullscreenModal from "@/components/fullscreen-modal";
+import ApiSettings from "@/components/api-settings";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+
+// Výchozí API URL - pro lokální testování používá místní server, pro produkci RunPod
+const DEFAULT_API_URL = window.location.hostname === 'localhost' || window.location.hostname.includes('replit') 
+  ? 'http://localhost:5000/api' // Lokální fallback
+  : "https://YOUR_RUNPOD_ENDPOINT"; // RunPod endpoint
 
 interface GenerationSettings {
   model: string;
@@ -21,6 +26,7 @@ export default function Home() {
   const [inputImage, setInputImage] = useState<File | null>(null);
   const [outputImage, setOutputImage] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [apiUrl, setApiUrl] = useState(DEFAULT_API_URL);
   const [settings, setSettings] = useState<GenerationSettings>({
     model: "stable-diffusion-xl-base-1.0",
     sampler: "Euler",
@@ -35,10 +41,26 @@ export default function Home() {
     mutationFn: async (data: { image: File; settings: GenerationSettings }) => {
       const formData = new FormData();
       formData.append('image', data.image);
-      formData.append('settings', JSON.stringify(data.settings));
+      formData.append('cfg_scale', data.settings.cfgScale.toString());
+      formData.append('steps', data.settings.steps.toString());
+      formData.append('strength', data.settings.denoiseStrength.toString());
+      formData.append('prompt', ''); // Můžete přidat prompt pole později
+      formData.append('negative_prompt', '');
       
-      const response = await apiRequest('POST', '/api/generate', formData);
-      return response.json();
+      const response = await fetch(`${apiUrl}/img2img`, {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      // Získej blob obrázku
+      const imageBlob = await response.blob();
+      const imageUrl = URL.createObjectURL(imageBlob);
+      
+      return { outputUrl: imageUrl };
     },
     onSuccess: (data) => {
       setOutputImage(data.outputUrl);
@@ -50,7 +72,7 @@ export default function Home() {
     onError: (error) => {
       toast({
         title: "Chyba při generování",
-        description: "Nepodařilo se vygenerovat obrázek. Zkuste to prosím znovu.",
+        description: "Nepodařilo se vygenerovat obrázek. Zkontrolujte připojení k backendu.",
         variant: "destructive",
       });
       console.error('Generation error:', error);
@@ -118,6 +140,9 @@ export default function Home() {
 
             {/* Settings Panel */}
             <SettingsPanel settings={settings} onSettingsChange={setSettings} />
+
+            {/* API Settings Panel */}
+            <ApiSettings apiUrl={apiUrl} onApiUrlChange={setApiUrl} />
           </div>
 
           {/* Right Column - Output */}

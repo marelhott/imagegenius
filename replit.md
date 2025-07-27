@@ -4,20 +4,38 @@
 
 AI Image Forge is a modern web application for AI-powered image-to-image generation. The application provides a professional interface inspired by RunwayML and Figma, allowing users to upload images and generate new variations using AI models with customizable settings.
 
+**Recent Update (Jan 2025)**: Added complete FastAPI backend for real AI image generation with RunPod integration, replacing the mock Express server.
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
 
 ## System Architecture
 
-The application follows a full-stack architecture with a clear separation between client and server:
+The application follows a full-stack architecture with dual backend support:
 
-- **Frontend**: React + Vite with TypeScript
-- **Backend**: Express.js with TypeScript
-- **Database**: PostgreSQL with Drizzle ORM
+### Frontend
+- **Framework**: React + Vite with TypeScript
 - **UI Framework**: Tailwind CSS with shadcn/ui components
 - **State Management**: TanStack Query for server state
-- **Build Tool**: Vite for frontend, esbuild for backend
+- **Build Tool**: Vite with HMR
+
+### Backend Options
+1. **Production Backend (FastAPI)**: 
+   - Real AI image generation using Stable Diffusion XL
+   - RunPod deployment for GPU acceleration
+   - FastAPI with uvicorn server
+   - Direct model loading with Diffusers library
+
+2. **Development Backend (Express)**: 
+   - Mock generation for frontend testing
+   - Local development server
+   - PostgreSQL with Drizzle ORM (optional)
+
+### Infrastructure
+- **Database**: PostgreSQL with Drizzle ORM (development)
+- **GPU Processing**: RunPod with CUDA support
+- **Model Storage**: .safetensors files in /models directory
 
 ## Key Components
 
@@ -55,12 +73,19 @@ Key tables:
 
 ## Data Flow
 
-1. **Image Upload**: Users drag/drop or select images through the ImageUpload component
-2. **Settings Configuration**: Users adjust AI generation parameters via SettingsPanel
-3. **API Request**: Frontend sends FormData with image and settings to `/api/generate`
-4. **Processing Simulation**: Backend simulates AI processing with timeout
-5. **Response**: Generated image URL returned to frontend
-6. **Display**: Output shown in preview area with fullscreen modal option
+### Production Flow (FastAPI Backend)
+1. **API Configuration**: Users set RunPod endpoint URL via ApiSettings component
+2. **Connection Test**: Test backend connectivity and model availability
+3. **Image Upload**: Users drag/drop images through ImageUpload component
+4. **Settings Configuration**: Users adjust AI generation parameters via SettingsPanel
+5. **API Request**: Frontend sends FormData to `/img2img` endpoint with image and parameters
+6. **AI Processing**: Backend loads SDXL model and generates new image using GPU
+7. **Response**: Generated image returned as PNG blob
+8. **Display**: Output shown in preview area with fullscreen modal option
+
+### Development Flow (Express Backend)
+1. **Mock Processing**: Simulated AI processing with placeholder images
+2. **Local Testing**: Frontend development without GPU requirements
 
 ## External Dependencies
 
