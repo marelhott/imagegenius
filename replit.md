@@ -4,7 +4,7 @@
 
 AI Image Forge is a modern web application for AI-powered image-to-image generation. The application provides a professional interface inspired by RunwayML and Figma, allowing users to upload images and generate new variations using AI models with customizable settings.
 
-**Recent Update (Jan 2025)**: Added complete FastAPI backend for real AI image generation with RunPod integration, replacing the mock Express server.
+**Recent Update (Jan 2025)**: Updated to use DreamLook API for cloud-based AI image generation, eliminating need for local GPU models and complex dependencies.
 
 ## User Preferences
 
@@ -21,11 +21,11 @@ The application follows a full-stack architecture with dual backend support:
 - **Build Tool**: Vite with HMR
 
 ### Backend Options
-1. **Production Backend (FastAPI)**: 
-   - Real AI image generation using Stable Diffusion XL
-   - RunPod deployment for GPU acceleration
+1. **Production Backend (FastAPI + DreamLook API)**: 
+   - Cloud-based AI image generation via DreamLook API
+   - RunPod deployment with minimal CPU requirements
    - FastAPI with uvicorn server
-   - Direct model loading with Diffusers library
+   - No local model storage or GPU needed
 
 2. **Development Backend (Express)**: 
    - Mock generation for frontend testing
@@ -33,9 +33,9 @@ The application follows a full-stack architecture with dual backend support:
    - PostgreSQL with Drizzle ORM (optional)
 
 ### Infrastructure
-- **Database**: PostgreSQL with Drizzle ORM (development)
-- **GPU Processing**: RunPod with CUDA support
-- **Model Storage**: .safetensors files in /models directory
+- **Database**: PostgreSQL with Drizzle ORM (development only)
+- **AI Processing**: DreamLook cloud API
+- **Authentication**: DreamLook API key via environment variables
 
 ## Key Components
 

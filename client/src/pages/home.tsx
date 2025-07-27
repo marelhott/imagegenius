@@ -40,12 +40,9 @@ export default function Home() {
   const generateMutation = useMutation({
     mutationFn: async (data: { image: File; settings: GenerationSettings }) => {
       const formData = new FormData();
-      formData.append('image', data.image);
-      formData.append('cfg_scale', data.settings.cfgScale.toString());
-      formData.append('steps', data.settings.steps.toString());
+      formData.append('file', data.image);
+      formData.append('prompt', 'high quality, detailed artwork');
       formData.append('strength', data.settings.denoiseStrength.toString());
-      formData.append('prompt', ''); // Můžete přidat prompt pole později
-      formData.append('negative_prompt', '');
       
       const response = await fetch(`${apiUrl}/img2img`, {
         method: 'POST',
@@ -56,11 +53,14 @@ export default function Home() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      // Získej blob obrázku
-      const imageBlob = await response.blob();
-      const imageUrl = URL.createObjectURL(imageBlob);
+      // DreamLook API vrací JSON s URL obrázku
+      const result = await response.json();
       
-      return { outputUrl: imageUrl };
+      if (result.output_url) {
+        return { outputUrl: result.output_url };
+      } else {
+        throw new Error('Generování se nezdařilo');
+      }
     },
     onSuccess: (data) => {
       setOutputImage(data.outputUrl);

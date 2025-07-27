@@ -1,71 +1,63 @@
-# Návod na nasazení AI Image Generator
+# Návod na nasazení AI Image Generator s DreamLook API
 
 ## 1. Příprava RunPod prostředí
 
 ### Krok 1: Vytvoření RunPod Podu
 1. Přihlaste se na [RunPod.io](https://runpod.io)
-2. Vytvořte nový Pod s GPU (doporučeno: RTX 4090 nebo A100)
-3. Použijte template s předinstalovaným Pythonem a CUDA
+2. Vytvořte nový Pod (základní CPU Pod je dostačující)
+3. Použijte template s předinstalovaným Pythonem
 
 ### Krok 2: Naklonování repositáře
 ```bash
 # Připojte se k Podu přes SSH nebo Jupyter
 cd /workspace
-git clone https://github.com/VASE_GITHUB_REPO.git .
+git clone https://github.com/VASE_GITHUB_REPO.git ai-image-generator
+cd ai-image-generator
 ```
 
 ### Krok 3: Instalace závislostí
 ```bash
 # Nainstalujte Python balíčky
-pip install -r backend/requirements.txt
-
-# Ověřte instalaci PyTorch s CUDA
-python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}')"
+cd backend
+pip install -r requirements.txt
 ```
 
-## 2. Příprava modelů
+## 2. Konfigurace DreamLook API
 
-### Stažení SDXL modelů
-1. Vytvořte složku pro modely:
+### Získání API klíče
+1. Zaregistrujte se na [DreamLook.ai](https://dreamlook.ai)
+2. Získejte API klíč z vašeho účtu
+3. Nastavte environment proměnnou:
+
 ```bash
-mkdir -p /models
+export DREAMLOOK_API_KEY="váš_api_klíč_zde"
 ```
 
-2. Stáhněte SDXL model (.safetensors soubor):
+### Permanentní nastavení API klíče
 ```bash
-# Příklad stažení základního SDXL modelu
-cd /models
-wget https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors
-
-# Nebo nahrajte vlastní .safetensors modely do této složky
+echo 'export DREAMLOOK_API_KEY="váš_api_klíč_zde"' >> ~/.bashrc
+source ~/.bashrc
 ```
-
-### Doporučené modely
-- **Základní SDXL**: `sd_xl_base_1.0.safetensors`
-- **Realistické**: `realvisxlV40.safetensors`
-- **Anime**: `animagineXLV3_v30.safetensors`
 
 ## 3. Spuštění backendu
 
-### Testovací spuštění
+### Ověření API klíče
 ```bash
-cd /workspace
-uvicorn backend.app:app --host 0.0.0.0 --port 8000 --reload
+echo $DREAMLOOK_API_KEY
+# Měl by zobrazit váš API klíč
 ```
 
-### Produkční spuštění
+### Spuštění serveru
 ```bash
-cd /workspace
-uvicorn backend.app:app --host 0.0.0.0 --port 8000 --workers 1
+cd /workspace/ai-image-generator/backend
+uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
 ### Ověření funkčnosti
 ```bash
 # Test health check
 curl http://localhost:8000/health
-
-# Test seznamu modelů
-curl http://localhost:8000/models
+# Měl by vrátit: {"status":"ok"}
 ```
 
 ## 4. Propojení s frontendem
@@ -103,13 +95,13 @@ curl http://YOUR_ENDPOINT/models
 
 ## 6. Možné problémy a řešení
 
-### Chyba: "Model není načten"
-- Ověřte, že existují .safetensors soubory ve složce `/models`
-- Restartujte backend server
+### Chyba: "API klíč není nastaven"
+- Ověřte proměnnou prostředí: `echo $DREAMLOOK_API_KEY`
+- Znovu nastavte klíč a restartujte server
 
-### Chyba: "CUDA out of memory"
-- Použijte Pod s více VRAM (min. 16GB)
-- Snižte rozlišení obrázků v kódu
+### Chyba: "Unauthorized" (401)
+- Zkontrolujte platnost API klíče na DreamLook.ai
+- Ověřte, že máte dostatečný kredit
 
 ### Chyba: "Connection refused"
 - Ověřte, že backend běží na portu 8000
@@ -119,19 +111,16 @@ curl http://YOUR_ENDPOINT/models
 - Backend má nakonfigurovaný CORS pro všechny domény
 - Ověřte správnost API URL ve frontendu
 
-## 7. Optimalizace výkonu
+## 7. Výhody DreamLook API
 
-### GPU optimalizace
-```python
-# V app.py už jsou implementované optimalizace:
-# - model_cpu_offload() pro úsporu VRAM
-# - torch.float16 pro rychlejší inference
-# - torch.no_grad() pro úsporu paměti
-```
+### Rychlost
+- Žádné čekání na načítání modelů
+- Rychlé generování díky cloudové infrastruktuře
 
-### Předčasné načtení
-- Model se načte automaticky při startu
-- První generování může trvat déle (caching)
+### Nižší nároky
+- Nepotřebujete GPU na RunPod
+- Základní CPU Pod je dostačující
+- Nižší náklady na hosting
 
 ## 8. Bezpečnost
 
