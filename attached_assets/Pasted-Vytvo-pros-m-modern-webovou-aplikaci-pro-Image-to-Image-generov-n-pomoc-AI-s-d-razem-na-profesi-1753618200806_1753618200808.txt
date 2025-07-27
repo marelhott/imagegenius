@@ -1,0 +1,87 @@
+Vytvoř prosím moderní webovou aplikaci pro Image‑to‑Image generování pomocí AI, s důrazem na profesionální vizuální design inspirovaný RunwayML a Figma.
+
+Technologický stack:
+React + Vite + TailwindCSS
+
+Komponentová knihovna: Shadcn/UI (pro tlačítka, karty, selecty, slidery apod.)
+
+Typografie: Google Font Inter
+
+Barevná paleta:
+
+Pozadí: #F8F9FB (světlé, jemně šedé)
+
+Karty: #FFFFFF (bílé s jemným stínem)
+
+Primární akcent: fialová #6C63FF (hlavní tlačítko „Generovat“)
+
+Text: #111827 (tmavě šedá)
+
+Rozvržení UI:
+1. Horní část:
+
+Centrální kontejner (max. šířka 1200px, vystředěný, velký padding).
+
+Header:
+
+Název aplikace (např. „AI Image Forge“) a krátký podtitulek („Jednoduchý nástroj pro převod obrázků pomocí AI“).
+
+Pracovní plocha:
+
+Vlevo: Velký box pro nahrání vstupního obrázku (drag & drop).
+
+Vpravo: Velký box pro náhled výstupního vygenerovaného obrázku (kliknutím otevře fullscreen).
+
+Oba boxy: výška cca 450–500px, zaoblené rohy, jemný stín, decentní rámeček.
+
+2. Akční tlačítko:
+
+Pod obrázky velké centrální tlačítko „Generovat“:
+
+Šířka cca 250px, výška cca 60px.
+
+Barva: fialová (#6C63FF).
+
+Zaoblené rohy, velká typografie.
+
+3. Nastavení generování:
+
+Pod tlačítkem karta „Nastavení generování“ s následujícími prvky:
+
+Rozbalovací menu pro výběr modelu.
+
+Rozbalovací menu pro výběr sampleru.
+
+Slidery pro:
+
+CFG Scale (0–15, výchozí 7.5)
+
+Steps (1–50, výchozí 20)
+
+Denoise Strength (0–1, výchozí 0.75)
+
+Žádný seed, šířku ani výšku – tyto parametry odstraň.
+
+Designové prvky (inspirace podle obrázku, který jsem poslal):
+Minimalistické karty: bílé pozadí, jemný stín, zaoblené rohy.
+
+Jasné rozdělení sekcí: obrázky nahoře, akční tlačítko pod nimi, nastavení dole.
+
+Velké, přehledné ovládací prvky (slidery, selecty).
+
+Moderní UI styl: podobně jako RunwayML, Figma nebo Canva (čisté a vzdušné rozhraní).
+
+Funkce:
+Po nahrání obrázku a kliknutí na „Generovat“ se volá backend (přes endpoint, který nastavím později).
+
+Po dokončení se výsledek zobrazí v pravém náhledovém boxu (s možností otevřít ve fullscreen).
+
+Další požadavky:
+Všechno zarovnej do jednoho centrálního sloupce, žádné roztahování přes celou obrazovku.
+
+Komunikuj se mnou výhradně česky.
+
+Co tím získáš:
+Profesionální vzhled (ne prototyp) – bude to vypadat jako skutečný grafický nástroj.
+
+Připravené prostředí pro pozdější napojení na RunPod/Supabase.
