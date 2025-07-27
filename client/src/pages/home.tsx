@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 // Výchozí API URL - pro lokální testování používá místní server, pro produkci RunPod
 const DEFAULT_API_URL = window.location.hostname === 'localhost' || window.location.hostname.includes('replit') 
   ? 'http://localhost:5000/api' // Lokální fallback
-  : "https://YOUR_RUNPOD_ENDPOINT"; // RunPod endpoint
+  : "https://yox7ni5yqmlheu-8000.proxy.runpod.net"; // RunPod endpoint
 
 interface GenerationSettings {
   model: string;
